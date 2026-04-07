@@ -1,20 +1,20 @@
 import streamlit as st
 import requests
 
-# -------------------- CONFIG --------------------
+#CONFIG
 API_URL = "http://localhost:8000/analyze"
 
 st.set_page_config(
     page_title="AI Image Research Agent",
-    page_icon="🧠",
+    page_icon="",
     layout="centered"
 )
 
-# -------------------- UI HEADER --------------------
-st.title("🧠 AI Image Research Agent")
+#UI HEADER
+st.title("AI Image Research Agent")
 st.caption("Upload an image and get AI-powered insights")
 
-# -------------------- FILE UPLOAD --------------------
+#FILE UPLOAD
 uploaded_file = st.file_uploader(
     "Upload Image",
     type=["png", "jpg", "jpeg"]
@@ -23,10 +23,10 @@ uploaded_file = st.file_uploader(
 if uploaded_file:
     st.image(uploaded_file, caption="Uploaded Image", use_container_width=True)
 
-    # -------------------- ANALYZE BUTTON --------------------
-    if st.button("🔍 Analyze Image"):
+    #ANALYZE BUTTON
+    if st.button("Analyze Image"):
 
-        with st.spinner("Analyzing image... Please wait ⏳"):
+        with st.spinner("Analyzing image... Please wait"):
             try:
                 response = requests.post(
                     API_URL,
@@ -46,30 +46,30 @@ if uploaded_file:
                 st.stop()
 
             except requests.exceptions.ConnectionError:
-                st.error("🚫 Cannot connect to backend. Is FastAPI running?")
+                st.error("Cannot connect to backend. Is FastAPI running?")
                 st.stop()
 
             except Exception as e:
                 st.error(f"Unexpected error: {str(e)}")
                 st.stop()
 
-        # -------------------- RESPONSE HANDLING --------------------
+        #RESPONSE HANDLING
         st.divider()
-        st.subheader("📊 Analysis Result")
+        st.subheader(" Analysis Result")
 
         if result.get("status") != "success":
             st.error(result.get("error", "Unknown error occurred"))
             
             # Debug mode (important for dev)
-            with st.expander("🛠 Debug Info"):
+            with st.expander(" Debug Info"):
                 st.json(result)
             st.stop()
 
-        # -------------------- SUCCESS UI --------------------
+        # SUCCESS UI
         col1, col2 = st.columns(2)
 
         with col1:
-            st.subheader("📝 Summary")
+            st.subheader("Summary")
             st.success(result.get("summary", "No summary available"))
 
         with col2:
@@ -80,12 +80,12 @@ if uploaded_file:
             else:
                 st.info("No objects detected")
 
-        st.subheader("🧠 Insights")
+        st.subheader("Insights")
         insights = result.get("insights", "No insights available")
 
         with st.expander("View Insights"):
             st.write(insights)
 
-        # -------------------- OPTIONAL: RAW RESPONSE --------------------
-        with st.expander("📦 Raw API Response"):
+        #RAW RESPONSE
+        with st.expander("Raw API Response"):
             st.json(result)
