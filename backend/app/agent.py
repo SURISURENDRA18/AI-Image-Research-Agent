@@ -3,23 +3,23 @@ from app.tools.search_tool import search_web
 
 
 def run_agent(image_bytes):
-    # Step 1: Vision analysis
+    # Vision analysis
     vision_result = analyze_image(image_bytes)
 
-    # 🚨 Step 2: Handle failure FIRST
+    #Handle failure FIRST
     if "error" in vision_result:
         return {
             "status": "failed",
             "error": vision_result["error"]
         }
 
-    # Step 3: Extract keywords safely
+    #Extract keywords safely
     keywords = vision_result.get("objects", [])
 
-    # Step 4: External research (only if keywords exist)
+    #External research (only if keywords exist)
     research = search_web(keywords) if keywords else []
 
-    # Step 5: Combine reasoning safely
+    #Combine reasoning safely
     final_output = {
         "status": "success",
         "summary": vision_result.get("description", ""),
